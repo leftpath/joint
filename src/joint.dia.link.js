@@ -943,12 +943,18 @@ joint.dia.LinkView = joint.dia.CellView.extend({
         return this._V.connection.node.getPointAtLength(length);
     },
 
+    isModelLink: function() {
+
+        return this._isModel(this.model.get('target')) && this._isModel(this.model.get('source'));
+    },
+
     // Interaction. The controller part.
     // ---------------------------------
 
     _beforeArrowheadMove: function() {
 
         this.model.trigger('batch:start');
+        this.model.trigger('arrowhead:moving', this);
 
         this._z = this.model.get('z');
         this.model.set('z', Number.MAX_VALUE);
@@ -978,6 +984,7 @@ joint.dia.LinkView = joint.dia.CellView.extend({
             this._unmarkAvailableMagnets();
         }
 
+        this.model.trigger('arrowhead:moved', this);
         this.model.trigger('batch:stop');
     },
 
